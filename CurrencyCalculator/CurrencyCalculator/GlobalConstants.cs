@@ -8,6 +8,6 @@
 
         public const string LATEST_URL = "latest";
 
-        public const string BASE_CURRENCY_URL = "&base=";
+        public const string SYMBOLS_URL = "symbols";
     }
 }
