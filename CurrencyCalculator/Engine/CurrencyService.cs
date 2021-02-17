@@ -13,7 +13,7 @@
     {
         static HttpClient client = new HttpClient();
 
-        public static async Task<Currencies> GetAvailableCurrencies()
+        public static async Task<Currencies> GetAvailableCurrenciesAsync()
         {
             // Your Access Key for https://fixer.io/ should be in a static class called "Access" in a constant string called "KEY".
             var path = $"{BASE_URL}{SYMBOLS_URL}{KEY_URL}{Access.KEY}";
@@ -29,7 +29,7 @@
             return currencies;
         }
 
-        public static async Task<ExchangeRate> GetLatestRateForEuro()
+        public static async Task<ExchangeRate> GetLatestRateForEuroAsync()
         {
             // Your Access Key for https://fixer.io/ should be in a static class called "Access" in a constant string called "KEY".
             var path = $"{BASE_URL}{LATEST_URL}{KEY_URL}{Access.KEY}";
@@ -45,7 +45,7 @@
             return rate;
         }
 
-        public static async Task<ExchangeRate> GetHistoricalRateForEuro(string date)
+        public static async Task<ExchangeRate> GetHistoricalRateForEuroAsync(string date)
         {
             // Your Access Key for https://fixer.io/ should be in a static class called "Access" in a constant string called "KEY".
             var path = $"{BASE_URL}{date}{KEY_URL}{Access.KEY}";

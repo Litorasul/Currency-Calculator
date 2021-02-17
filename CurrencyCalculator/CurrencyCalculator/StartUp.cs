@@ -12,7 +12,12 @@
         static async Task Main(string[] args)
         {
             Console.WriteLine("Loading...");
-            availableCurrencies = await CurrencyService.GetAvailableCurrencies();
+            availableCurrencies = await CurrencyService.GetAvailableCurrenciesAsync();
+
+            var currentRates = await CurrencyService.GetLatestRateForEuroAsync();
+            var dbContext = new CurrencyDbContext();
+            var dbService = new DatabaseService(dbContext);
+            await dbService.StoreDailyExchangeRatesAsync(currentRates);
 
             var fromCurrencyCode = GetCurrencyCode("From");
 
@@ -89,14 +94,14 @@
 
             if (isLatest)
             {
-                rate = await CurrencyService.GetLatestRateForEuro();
+                rate = await CurrencyService.GetLatestRateForEuroAsync();
                 calculator = new Calculator(rate);
 
             }
             else
             {
                 var date = GetDate();
-                rate = await CurrencyService.GetHistoricalRateForEuro(date.ToString("yyyy-MM-dd"));
+                rate = await CurrencyService.GetHistoricalRateForEuroAsync(date.ToString("yyyy-MM-dd"));
                 calculator = new Calculator(rate);
             }
             return calculator.Convert(from, to, amount);
