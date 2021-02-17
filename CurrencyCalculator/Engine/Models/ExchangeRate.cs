@@ -1,4 +1,4 @@
-﻿namespace CurrencyCalculator
+﻿namespace Engine.Models
 {
     using System;
     using System.Collections.Generic;

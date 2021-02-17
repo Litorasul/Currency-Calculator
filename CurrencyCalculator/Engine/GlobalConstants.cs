@@ -1,4 +1,4 @@
-﻿namespace CurrencyCalculator
+﻿namespace Engine
 {
     public static class GlobalConstants
     {

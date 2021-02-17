@@ -3,6 +3,9 @@
     using System;
     using System.Threading.Tasks;
 
+    using Engine;
+    using Engine.Models;
+
     class StartUp
     {
         private static Currencies availableCurrencies;
@@ -23,7 +26,7 @@
 
             var result = await GetResult(fromCurrencyCode, toCurrencyCode, amount);
 
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{amount} {fromCurrencyCode} is {result} {toCurrencyCode}");
             Console.ForegroundColor = ConsoleColor.White;
         }
@@ -32,7 +35,7 @@
         {
             Console.WriteLine($"{type} what Currency?");
             Console.Write("Please type in Currency Code: ");
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             var code = Console.ReadLine();
             Console.ForegroundColor = ConsoleColor.White;
             code = CheckCurrencyCode(code);
@@ -47,7 +50,7 @@
                 Console.WriteLine("Wrong Currency Code.");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("Please enter Currency Code: ");
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 code = Console.ReadLine();
                 Console.ForegroundColor = ConsoleColor.White;
                 code = CheckCurrencyCode(code);
@@ -62,7 +65,7 @@
             Console.Write("Please type in amount: ");
             try
             {
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 amount = decimal.Parse(Console.ReadLine());
                 Console.ForegroundColor = ConsoleColor.White;
             }
@@ -101,13 +104,11 @@
 
         private static DateTime GetDate()
         {
-            DateTime result;
-
             Console.Write("Please type in a day, a month, and a year: ");
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             var dateString = Console.ReadLine();
             Console.ForegroundColor = ConsoleColor.White;
-            if (DateTime.TryParse(dateString, out result))
+            if (DateTime.TryParse(dateString, out var result))
             {
                 return result;
             }
@@ -125,7 +126,7 @@
         private static bool CheckIsLatest()
         {
             Console.WriteLine("Do you want real-time exchange rate? Y/N ");
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             var response = Console.ReadLine();
             Console.ForegroundColor = ConsoleColor.White;
             if (response.ToUpper()[0] == 'N')

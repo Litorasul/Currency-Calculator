@@ -1,8 +1,11 @@
-﻿namespace CurrencyCalculator
+﻿namespace Engine
 {
     using System.Net.Http;
     using System.Threading.Tasks;
+
     using Newtonsoft.Json;
+
+    using Engine.Models;
 
     using static GlobalConstants;
 
