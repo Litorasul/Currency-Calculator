@@ -3,6 +3,10 @@
     using System;
     using System.Threading.Tasks;
 
+    using CurrencyCalculator.Scheduler;
+
+    using Microsoft.EntityFrameworkCore;
+
     using Engine;
     using Engine.Models;
 
@@ -14,10 +18,9 @@
             Console.WriteLine("Loading...");
             availableCurrencies = await CurrencyService.GetAvailableCurrenciesAsync();
 
-            var currentRates = await CurrencyService.GetLatestRateForEuroAsync();
             var dbContext = new CurrencyDbContext();
+            await dbContext.Database.MigrateAsync();
             var dbService = new DatabaseService(dbContext);
-            await dbService.StoreDailyExchangeRatesAsync(currentRates);
 
             var fromCurrencyCode = GetCurrencyCode("From");
 
@@ -34,6 +37,19 @@
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{amount} {fromCurrencyCode} is {result} {toCurrencyCode}");
             Console.ForegroundColor = ConsoleColor.White;
+
+            // This Scheduler will start the task at 08:01 and call it every day.
+            MyScheduler.IntervalInDays(8, 01, 1, async () => {
+
+                Console.WriteLine($"Scheduled task started at: {DateTime.Now}");
+
+                var currentRates = await CurrencyService.GetLatestRateForEuroAsync();
+                await dbService.StoreDailyExchangeRatesAsync(currentRates);
+
+                });
+
+            //To keep the App running.
+            Console.ReadLine();
         }
 
         private static string GetCurrencyCode(string type)
