@@ -16,27 +16,45 @@
         static async Task Main(string[] args)
         {
             Console.WriteLine("Loading...");
+
+            // Get the available currencies at the moment to check if the input is valid.
             availableCurrencies = await CurrencyService.GetAvailableCurrenciesAsync();
 
             var dbContext = new CurrencyDbContext();
-            await dbContext.Database.MigrateAsync();
-            var dbService = new DatabaseService(dbContext);
 
+            // Apply any pending migrations.
+            // Creates a Database called 'CurrencyCalculator-Kelov' if it does not already exist.
+            await dbContext.Database.MigrateAsync();
+
+            // Takes an input from the Console, checks if it is valid.
+            // If input is not valid asks again.
             var fromCurrencyCode = GetCurrencyCode("From");
 
             Console.WriteLine();
 
+            // Takes an input from the Console, checks if it is valid.
+            // If input is not valid asks again.
             var toCurrencyCode = GetCurrencyCode("To");
 
             Console.WriteLine();
 
+            // Takes an input from the Console, checks if it is valid.
+            // If input is not valid asks again.
             var amount = GetAmount();
 
-            var result = await GetResult(fromCurrencyCode, toCurrencyCode, amount);
+            // Asks if it should use the latest rates or historical.
+            bool isLatest = CheckIsLatest();
 
+            // Calculates the result.
+            var result = await GetResult(fromCurrencyCode, toCurrencyCode, amount, isLatest);
+
+            // Prints the result.
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{amount} {fromCurrencyCode} is {result} {toCurrencyCode}");
             Console.ForegroundColor = ConsoleColor.White;
+
+            // Create a Database Service to be used by the Scheduler.
+            var dbService = new DatabaseService(dbContext);
 
             // This Scheduler will start the task at 08:01 and call it every day.
             MyScheduler.IntervalInDays(8, 01, 1, async () => {
@@ -48,7 +66,7 @@
 
                 });
 
-            //To keep the App running.
+            // To keep the App running.
             Console.ReadLine();
         }
 
@@ -89,11 +107,15 @@
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 amount = decimal.Parse(Console.ReadLine());
                 Console.ForegroundColor = ConsoleColor.White;
+                if (amount <= 0)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
             }
             catch (Exception e)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Wrong format, please type in Numbers!");
+                Console.WriteLine("Wrong format, please type in positive Numbers!");
                 Console.ForegroundColor = ConsoleColor.White;
                 amount = GetAmount();
             }
@@ -101,10 +123,8 @@
             return amount;
         }
 
-        private static async Task<decimal> GetResult(string from, string to, decimal amount)
+        private static async Task<decimal> GetResult(string from, string to, decimal amount, bool isLatest)
         {
-            bool isLatest = CheckIsLatest();
-
             ExchangeRate rate = null;
             Calculator calculator = null;
 

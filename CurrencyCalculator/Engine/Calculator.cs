@@ -22,7 +22,7 @@ namespace Engine
             return inEuro * this.Rate.Rates[toCurrencyCode];
         }
 
-        private decimal ConvertToEuro( string currencyCode, decimal amount)
+        public decimal ConvertToEuro( string currencyCode, decimal amount)
         {
             if (currencyCode == "EUR")
             {
